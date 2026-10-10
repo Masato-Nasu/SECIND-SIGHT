@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f4f3ef">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="SECOND SIGHT">
+<meta name="description" content="文字・図形・手描き・画像から、左右2枚の立体視画像を作るアプリ。">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon-192.png">
+<title>SECOND SIGHT — 2枚のモザイク立体視メーカー</title>
+<style>
+:root{--bg:#f4f3ef;--surface:#fff;--ink:#1b2427;--muted:#6e7779;--border:#dce0de;--accent:#176d63;--radius:18px;color-scheme:light}
+*{box-sizing:border-box}html{font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;-webkit-tap-highlight-color:transparent}body{margin:0;background:var(--bg);color:var(--ink)}button,input,select,textarea{font:inherit}button{cursor:pointer}button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid #93c5ba;outline-offset:2px}
+.install-link{border:1px solid #cad4cf;background:transparent;color:var(--ink);font-size:12px;font-weight:700;border-radius:9px;padding:9px 12px;white-space:nowrap}
+.install-link:hover{background:#edf4f0}
+.install-modal{border:1px solid #d5ded8;border-radius:18px;padding:0;width:min(430px,calc(100% - 28px));color:var(--ink);background:var(--surface);box-shadow:0 15px 65px #182f2f37}
+.install-modal::backdrop{background:#0c2226a6}
+.install-modal-inner{padding:23px 23px 21px}.install-modal h2{font-size:20px;letter-spacing:-.02em;margin:0 0 12px}.install-modal p{font-size:14px;line-height:1.8;color:#4d5b57;margin:0 0 10px}.install-modal button{margin-top:7px}
+.shell{width:min(1720px,calc(100% - 24px));margin:0 auto;padding-bottom:50px}
+header{display:flex;justify-content:space-between;align-items:center;padding:25px 0 20px;border-bottom:1px solid #d5dad7;gap:12px}header .brand{font-size:14px;font-weight:850;letter-spacing:.15em}.mark{display:inline-block;background:#1b292b;color:white;padding:9px 10px;border-radius:10px;margin-right:9px}.header-note{color:#6a7472;font-size:12px;white-space:nowrap}
+h1{font-size:clamp(27px,4vw,42px);letter-spacing:-.04em;line-height:1.2;margin:32px 0 8px}p.lead{color:var(--muted);font-size:14px;line-height:1.8;margin:0 0 28px}
+.layout{display:grid;grid-template-columns:minmax(0,1fr);gap:22px;align-items:start}.result{grid-column:1}.controls{grid-column:1;max-width:920px;width:100%;justify-self:center}.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;box-shadow:0 5px 24px #23342f07}.card-header{padding:17px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:13px;font-weight:700}.small-muted{font-size:11px;font-weight:500;color:var(--muted)}
+.preview-area{padding:10px 10px 12px;background:#fafbf9}#output{display:block;width:100%;height:auto;aspect-ratio:16/9;background:#f4f4f3;border-radius:10px;touch-action:pan-y;max-height:calc(100vh - 230px);object-fit:contain}.guide-note{text-align:center;font-size:12px;color:var(--muted);margin:10px 0 2px;line-height:1.7}.guide-note strong{color:var(--ink)}
+.preview-bar{padding:0 12px 12px;display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap}.preview-status{color:var(--muted);font-size:12px}.preview-pill{display:inline-flex;gap:8px;align-items:center;background:#f2f4f1;border:1px solid #dde2df;border-radius:999px;padding:7px 10px;font-size:12px;color:#576460}
+.actions{display:flex;gap:9px;padding:15px 18px;border-top:1px solid var(--border);flex-wrap:wrap}.primary{background:var(--accent);color:white;border:1px solid var(--accent)}.secondary{background:#fff;color:var(--ink);border:1px solid #cbd3cf}.btn{padding:12px 15px;border-radius:11px;font-weight:760;font-size:13px;display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:44px}.actions .primary{flex:1}.actions .secondary{flex:1}.btn:hover{filter:brightness(.96)}
+.panel-body{padding:17px}.tabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;padding:4px;background:#f2f4f1;border-radius:12px;margin-bottom:20px}.tabs button{font-size:12px;font-weight:720;min-width:0;padding:11px 4px;border:0;border-radius:9px;background:transparent;color:#71807a}.tabs button.active{background:white;color:var(--ink);box-shadow:0 1px 4px #18261e17}.input-group{margin-bottom:17px}.field-label{font-size:12px;display:flex;align-items:center;justify-content:space-between;font-weight:750;margin-bottom:9px}.field-label span{color:var(--muted);font-weight:550;font-variant-numeric:tabular-nums}.text-input,.select{border:1px solid #cfd7d2;background:white;width:100%;border-radius:10px;height:45px;padding:0 12px;color:var(--ink);min-width:0}.text-input{font-size:18px;font-weight:650;resize:vertical;min-height:68px;height:68px;padding:11px 12px}.select{font-size:13px}.field-hint{margin-top:7px;font-size:11px;line-height:1.6;color:var(--muted)}input[type=range]{width:100%;accent-color:var(--accent);cursor:pointer}
+.choice{display:grid;grid-template-columns:1fr 1fr;gap:8px}.choice button{min-height:41px;padding:10px 4px;border-radius:10px;border:1px solid #d1d9d5;background:white;font-size:13px;font-weight:680}.choice button.active{background:#e7f2ee;border-color:#6a9d91;color:#135950}.tool-panel[hidden]{display:none!important}
+#drawpad{background:#151c1e;touch-action:none;display:block;width:100%;height:auto;aspect-ratio:8/5;border-radius:9px;cursor:crosshair}.draw-controls{display:flex;gap:7px;margin:9px 0 13px}.draw-controls button{flex:1;font-size:12px}.upload{width:100%;border:1px dashed #a4b3ad;background:#f6f9f7;min-height:105px;padding:17px;border-radius:12px;font-size:13px;color:#425651;cursor:pointer;display:grid;place-items:center;text-align:center;gap:5px}.upload input{display:none}.upload strong{color:var(--accent)}
+.tip{margin-top:18px;border:1px solid #d8dedb;border-radius:14px;padding:18px 19px;color:#4d5b57;background:#f9faf8;font-size:13px;line-height:1.85}.tip strong{color:var(--ink)}.tip p{margin:7px 0 0}.foot{padding:25px 0 0;text-align:center;font-size:11px;color:#8a9491;line-height:1.8}
+@media(max-width:860px){.layout{grid-template-columns:1fr}.controls{grid-row:auto;max-width:none}.shell{width:min(700px,calc(100% - 16px))}header{padding:16px 0}.header-note{display:none}h1{margin-top:25px}.panel-body{padding:15px}.card-header{padding:14px 16px}.preview-area{padding:6px}.preview-bar{padding:0 10px 10px}.actions{padding:12px}.tip{margin-top:14px}#output{max-height:none}}
+@media(max-width:400px){.actions .btn{font-size:12px;padding:10px 8px}h1{font-size:29px}}
+</style>
+</head>
+<body>
+<div class="shell">
+<header><div class="brand"><span class="mark">◉</span> SECOND SIGHT</div><button class="install-link" id="installButton" type="button">アプリに追加</button></header>
+<dialog class="install-modal" id="installDialog" aria-labelledby="installTitle"><div class="install-modal-inner"><h2 id="installTitle">ホーム画面に追加</h2><div id="installInstructions"></div><button class="btn primary" id="closeInstall" type="button">閉じる</button></div></dialog>
+<h1>モザイクの奥に、形を隠す。</h1>
+<p class="lead">左右2枚のモザイクに文字や図形を隠します。片方だけでは読めず、両眼で重ねると形が浮かび上がります。</p>
+<div class="layout">
+<section class="card result" aria-label="生成結果">
+<div class="card-header"><span>左右2枚のモザイク画像</span><span class="small-muted" id="sizeText">1600 × 900 px / 横いっぱい表示</span></div>
+<div class="preview-area">
+<canvas id="output" width="1600" height="900" aria-label="生成された立体視画像"></canvas>
+<p class="guide-note" id="guideText"><strong>交差法</strong>なら中央に重なった像を見てください。<strong>平行法</strong>なら遠くを見るように合わせてください。</p>
+</div>
+<div class="preview-bar">
+<span class="preview-pill" id="modePill">交差法（寄り目）</span>
+<span class="preview-status" id="status" role="status">生成しました</span>
+</div>
+<div class="actions"><button class="btn primary" id="generate" type="button">↻　模様を作り直す</button><button class="btn secondary" id="saveLeft" type="button">↓　LをPNG保存</button><button class="btn secondary" id="saveRight" type="button">↓　RをPNG保存</button><button class="btn secondary" id="save" type="button">↓　2枚セットを保存</button><button class="btn secondary" id="saveDepth" type="button">元の形を保存</button></div>
+</section>
+<section class="card controls" aria-label="編集">
+<div class="card-header"><span>1. 形を選ぶ</span><span class="small-muted">すべて端末内で処理</span></div>
+<div class="panel-body">
+<div class="tabs" role="group" aria-label="素材の種類"><button class="active" data-tab="text" type="button">文字</button><button data-tab="shape" type="button">図形</button><button data-tab="draw" type="button">手描き</button><button data-tab="image" type="button">画像</button></div>
+<div class="tool-panel" id="panel-text"><div class="input-group"><label class="field-label" for="words">隠す文字 <span>中央に配置</span></label><textarea id="words" class="text-input" maxlength="24" placeholder="HELLO / こんにちは" rows="2">HELLO</textarea><div class="field-hint">日本語にも対応。改行は最大2行まで。</div></div></div>
+<div class="tool-panel" id="panel-shape" hidden><div class="input-group"><label class="field-label" for="shape">図形</label><select class="select" id="shape"><option value="heart">ハート</option><option value="star">星</option><option value="circle">円</option><option value="rings">同心円</option><option value="diamond">ひし形</option></select></div></div>
+<div class="tool-panel" id="panel-draw" hidden><div class="input-group"><span class="field-label">指やマウスで描く</span><canvas id="drawpad" width="720" height="450" aria-label="手描きキャンバス"></canvas><div class="draw-controls"><button type="button" class="btn secondary" id="drawPen">描く</button><button type="button" class="btn secondary" id="drawEraser">消す</button><button type="button" class="btn secondary" id="drawClear">全消去</button></div><label class="field-label" for="brush">ブラシの太さ <span id="brushValue">28</span></label><input id="brush" type="range" min="8" max="110" step="2" value="28"></div></div>
+<div class="tool-panel" id="panel-image" hidden><div class="input-group"><label class="field-label" for="upload">画像を読み込む <span id="uploadName">未選択</span></label><label class="upload"> <input type="file" id="upload" accept="image/*"><strong>ここを押して画像を選ぶ</strong><span>明るい部分が前面に出ます。</span></label></div></div>
+<hr style="border:0;border-top:1px solid var(--border);margin:23px 0 19px">
+<p style="font-size:11px;letter-spacing:.06em;font-weight:850;color:#75837f;margin:0 0 15px">2. 見え方を調整</p>
+<div class="input-group"><span class="field-label">見る方法</span><div class="choice" role="group" aria-label="立体視方式"><button id="parallel" type="button">平行法（遠くを見る）</button><button id="cross" class="active" type="button">交差法（寄り目）</button></div></div>
+<div class="input-group"><label class="field-label" for="strength">立体の強さ <span id="strengthValue">22</span></label><input id="strength" type="range" min="6" max="48" value="22"></div>
+<div class="input-group"><label class="field-label" for="grain">モザイクの粒の大きさ</label><select class="select" id="grain"><option value="3">標準</option><option value="2">細かい</option><option value="5">粗い</option></select></div>
+<div class="input-group"><label class="field-label" for="palette">モザイクの色</label><select class="select" id="palette"><option value="mono">白と黒</option><option value="blue">青と白</option><option value="mix">多色</option></select></div>
+<div class="tip"><strong>ポイント</strong><p>両方ともランダムドットのモザイクです。交差法は左右の像が中央で重なるように、平行法は遠くを見るように視線を合わせます。見えにくい場合は粒を「粗い」、立体の強さを12〜20にしてみてください。</p></div>
+</div>
+</section>
+</div>
+<p class="foot">SECOND SIGHT / random-dot stereo pair</p>
+</div>
+<script>
+const $=id=>document.getElementById(id);
+const out=$('output'),oc=out.getContext('2d');
+const depth=document.createElement('canvas');depth.width=720;depth.height=450;const dc=depth.getContext('2d');
+const draw=$('drawpad'),dr=draw.getContext('2d');
+const pairLeft=document.createElement('canvas');pairLeft.width=720;pairLeft.height=450;const lctx=pairLeft.getContext('2d');
+const pairRight=document.createElement('canvas');pairRight.width=720;pairRight.height=450;const rctx=pairRight.getContext('2d');
+const W=depth.width,H=depth.height;
+let tab='text',mode='cross',seed=(Math.random()*0xffffffff)>>>0,imageBitmap=null,erase=false,pointerDown=false,renderTicket=0;
+
+function randomGen(seed){let x=seed>>>0;return()=>((x=(x*1664525+1013904223)>>>0)/4294967296)}
+function centerText(){
+ const raw=$('words').value.trim()||'HELLO';
+ const lines=raw.split(/\n+/).slice(0,2).map(v=>v.trim()).filter(Boolean); if(!lines.length) lines.push('HELLO');
+ let size=110;
+ function metrics(s){
+   dc.font=`800 ${s}px -apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif`;
+   const gap=Math.max(6,s*.05);
+   const widths=lines.map(line=>Array.from(line).reduce((a,ch)=>a+dc.measureText(ch).width,0)+Math.max(0,Array.from(line).length-1)*gap);
+   return {gap,widths};
+ }
+ let m=metrics(size);
+ while(size>24 && (Math.max(...m.widths)>W*0.70 || lines.length*size*1.28>H*0.48)){ size-=2; m=metrics(size); }
+ dc.textBaseline='middle';
+ const rowHeight=size*1.28;
+ const firstY=H/2-(lines.length-1)*rowHeight/2;
+ dc.fillStyle='#fff'; dc.strokeStyle='#fff'; dc.lineJoin='round'; dc.lineWidth=Math.max(1.4,size*.03);
+ lines.forEach((line,row)=>{
+   dc.font=`800 ${size}px -apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif`;
+   let x=(W-m.widths[row])/2;
+   const y=firstY+row*rowHeight;
+   for(const ch of Array.from(line)){
+     dc.strokeText(ch,x,y); dc.fillText(ch,x,y); x+=dc.measureText(ch).width+m.gap;
+   }
+ });
+}
+function pathStar(cx,cy,outer,inner,n=5){dc.beginPath();for(let i=0;i<2*n;i++){const a=Math.PI*i/n-Math.PI/2;const r=i%2?inner:outer;const px=cx+Math.cos(a)*r,py=cy+Math.sin(a)*r;if(i===0)dc.moveTo(px,py);else dc.lineTo(px,py)}dc.closePath()}
+function drawShape(){
+ const type=$('shape').value,cx=W/2,cy=H/2;
+ dc.save();dc.fillStyle='#fff';dc.strokeStyle='#fff';dc.lineJoin='round';dc.lineCap='round';
+ if(type==='heart'){
+   // Restore the heart contour that was well received in v0.3.
+   const x=cx,y=cy+8;dc.beginPath();dc.moveTo(x,y+126);
+   dc.bezierCurveTo(x-24,y+108,x-162,y+8,x-141,y-82);
+   dc.bezierCurveTo(x-127,y-151,x-40,y-151,x,y-94);
+   dc.bezierCurveTo(x+40,y-151,x+127,y-151,x+141,y-82);
+   dc.bezierCurveTo(x+162,y+8,x+24,y+108,x,y+126);dc.closePath();dc.fill();
+ } else if(type==='star'){
+   pathStar(cx,cy,122,54);dc.fill();
+ } else if(type==='circle'){
+   dc.beginPath();dc.arc(cx,cy,118,0,Math.PI*2);dc.fill();
+ } else if(type==='diamond'){
+   dc.beginPath();dc.moveTo(cx,cy-132);dc.lineTo(cx+148,cy);dc.lineTo(cx,cy+132);dc.lineTo(cx-148,cy);dc.closePath();dc.fill();
+ } else if(type==='rings'){
+   dc.lineWidth=24;[118,82,46].forEach(r=>{dc.beginPath();dc.arc(cx,cy,r,0,Math.PI*2);dc.stroke()});
+ }
+ dc.restore();
+}
+function fillDepth(){
+ dc.clearRect(0,0,W,H); dc.fillStyle='#000'; dc.fillRect(0,0,W,H);
+ if(tab==='text') centerText();
+ if(tab==='shape') drawShape();
+ if(tab==='draw') dc.drawImage(draw,0,0);
+ if(tab==='image' && imageBitmap){
+   const iw=imageBitmap.width, ih=imageBitmap.height;
+   const scl=Math.min(W*0.70/iw,H*0.70/ih); const w=iw*scl,h=ih*scl;
+   dc.drawImage(imageBitmap,(W-w)/2,(H-h)/2,w,h);
+ }
+}
+// Random-dot stereo pair: both panels consist exclusively of identically
+// distributed mosaic pixels.  They share a seeded random-dot field; only the
+// binocular disparities encode the hidden depth map.  Neither eye image has
+// an explicitly drawn silhouette, shadow, caption, or outline of the object.
+function randomDotTexture(){
+ const grain=+$('grain').value;
+ const palette={
+   mono:[[16,22,24],[237,240,238]],
+   blue:[[16,39,51],[66,117,139],[195,218,219],[242,245,241]],
+   mix:[[34,45,49],[189,96,83],[226,198,109],[95,149,139],[229,231,225]]
+ }[$('palette').value];
+ const rand=randomGen(seed), data=new Uint8ClampedArray(W*H*4);
+ // Coarse pixels remain distinct after the image is scaled on a phone.
+ for(let y=0;y<H;y+=grain){
+   for(let x=0;x<W;x+=grain){
+     const c=palette[Math.floor(rand()*palette.length)];
+     for(let j=y;j<Math.min(H,y+grain);j++){
+       for(let i=x;i<Math.min(W,x+grain);i++){
+         const pos=(j*W+i)*4;
+         data[pos]=c[0];data[pos+1]=c[1];data[pos+2]=c[2];data[pos+3]=255;
+       }
+     }
+   }
+ }
+ return data;
+}
+function renderEye(ctx, texture, depthData, side, disparity){
+ const result=new Uint8ClampedArray(texture);
+ const closest=new Uint8Array(W*H);
+ // Foreground surface points are shifted in opposite directions for each eye.
+ // All disoccluded/empty locations retain the same background random dots.
+ for(let y=0;y<H;y++){
+   for(let x=0;x<W;x++){
+     const i=y*W+x, p=i*4;
+     const z=(depthData[p]*0.2126+depthData[p+1]*0.7152+depthData[p+2]*0.0722)/255;
+     if(z<=0.03)continue;
+     const xd=x+Math.round(side*disparity*z/2);
+     if(xd<0||xd>=W)continue;
+     const to=y*W+xd, q=to*4, zi=Math.round(z*255);
+     // The nearest surface occludes previously written, farther surfaces.
+     if(closest[to]>zi)continue;
+     closest[to]=zi;
+     result[q]=texture[p];result[q+1]=texture[p+1];result[q+2]=texture[p+2];result[q+3]=255;
+   }
+ }
+ const id=ctx.createImageData(W,H);
+ id.data.set(result);ctx.putImageData(id,0,0);
+}
+function renderPair(){
+ fillDepth();
+ const texture=randomDotTexture(), zmap=dc.getImageData(0,0,W,H).data;
+ const disparity=+$('strength').value;
+ renderEye(lctx,texture,zmap,1,disparity);
+ renderEye(rctx,texture,zmap,-1,disparity);
+ oc.clearRect(0,0,out.width,out.height);
+ oc.fillStyle='#f7f7f4';oc.fillRect(0,0,out.width,out.height);
+ const padX=60,padY=110,gap=40,viewW=W,viewH=H;
+ const leftX=padX,rightX=padX+viewW+gap,top=padY;
+ // Cross-eyed: the right-eye image belongs on the screen's left side.
+ const a=mode==='parallel'?pairLeft:pairRight;
+ const b=mode==='parallel'?pairRight:pairLeft;
+ oc.imageSmoothingEnabled=false;
+ oc.drawImage(a,leftX,top,viewW,viewH);
+ oc.drawImage(b,rightX,top,viewW,viewH);
+ oc.strokeStyle='#dadfdb';oc.lineWidth=2;
+ oc.strokeRect(leftX,top,viewW,viewH);oc.strokeRect(rightX,top,viewW,viewH);
+ oc.fillStyle='#63706c';oc.font='700 24px -apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif';
+ oc.fillText(mode==='parallel'?'左眼用':'右眼用',leftX+12,top-18);
+ oc.fillText(mode==='parallel'?'右眼用':'左眼用',rightX+12,top-18);
+ const guideY=top+viewH+58;
+ oc.fillStyle='#1b2427';
+ oc.beginPath();oc.arc(leftX+viewW/2,guideY,8,0,Math.PI*2);oc.fill();
+ oc.beginPath();oc.arc(rightX+viewW/2,guideY,8,0,Math.PI*2);oc.fill();
+ oc.fillStyle='#6b7572';oc.font='500 21px -apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif';
+ oc.fillText(mode==='parallel'?'遠くを見るように':'中央に重ねるように',out.width/2-98,guideY+42);
+ $('modePill').textContent=mode==='parallel'?'平行法（遠くを見る）':'交差法（寄り目）';
+ $('status').textContent='モザイクを生成しました';
+}
+function renderDepthPreview(){ fillDepth(); }
+async function saveCanvas(which){
+ // L/R designate the left-eye and right-eye images, regardless of onscreen order.
+ const file=document.createElement('canvas');
+ const source=which==='L'?pairLeft:which==='R'?pairRight:which==='depth'?depth:out;
+ const scale=which==='depth'?2:1;
+ file.width=source.width*scale;file.height=source.height*scale;
+ const fc=file.getContext('2d');fc.imageSmoothingEnabled=false;
+ fc.drawImage(source,0,0,file.width,file.height);
+ const blob=await new Promise(resolve=>file.toBlob(resolve,'image/png'));
+ if(!blob){ $('status').textContent='保存できませんでした'; return; }
+ const names={L:'second-sight-L.png',R:'second-sight-R.png',depth:'second-sight-depth.png',stereo:'second-sight-stereo-pair.png'};
+ const link=document.createElement('a'),url=URL.createObjectURL(blob);
+ link.href=url;link.download=names[which]||names.stereo;
+ document.body.appendChild(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),3000);
+ $('status').textContent=which==='L'?'左眼用（L）を保存しました':which==='R'?'右眼用（R）を保存しました':'PNGを保存しました';
+}
+function scheduleGenerate(){ clearTimeout(renderTicket); renderTicket=setTimeout(renderPair, 90); }
+function setTab(next){ tab=next; document.querySelectorAll('[data-tab]').forEach(b=>b.classList.toggle('active',b.dataset.tab===next)); document.querySelectorAll('.tool-panel').forEach(el=>el.hidden=el.id!=='panel-'+next); renderPair(); }
+function chooseMode(next){ mode=next; $('parallel').classList.toggle('active',next==='parallel'); $('cross').classList.toggle('active',next==='cross'); renderPair(); }
+
+// draw controls
+function brushMode(v){ erase=v; $('drawPen').classList.toggle('primary',!v); $('drawPen').classList.toggle('secondary',v); $('drawEraser').classList.toggle('primary',v); $('drawEraser').classList.toggle('secondary',!v) }
+brushMode(false); dr.fillStyle='black'; dr.fillRect(0,0,W,H);
+function pos(e){const r=draw.getBoundingClientRect(); return {x:(e.clientX-r.left)*W/r.width,y:(e.clientY-r.top)*H/r.height};}
+let last=null;
+function paint(e){const p=pos(e); const width=+$('brush').value; dr.strokeStyle=erase?'#000':'#fff'; dr.fillStyle=dr.strokeStyle; dr.lineWidth=width; dr.lineCap='round'; dr.lineJoin='round'; dr.beginPath(); if(last){dr.moveTo(last.x,last.y); dr.lineTo(p.x,p.y); dr.stroke();} else {dr.arc(p.x,p.y,width/2,0,Math.PI*2); dr.fill();} last=p;}
+draw.addEventListener('pointerdown',e=>{e.preventDefault(); draw.setPointerCapture(e.pointerId); pointerDown=true; last=null; paint(e)});
+draw.addEventListener('pointermove',e=>{ if(!pointerDown) return; e.preventDefault(); paint(e); });
+const endDrawing=()=>{ if(pointerDown){ pointerDown=false; last=null; renderPair(); } };
+draw.addEventListener('pointerup',endDrawing); draw.addEventListener('pointercancel',endDrawing); draw.addEventListener('lostpointercapture',endDrawing);
+$('drawPen').onclick=()=>brushMode(false); $('drawEraser').onclick=()=>brushMode(true); $('drawClear').onclick=()=>{ dr.fillStyle='black'; dr.fillRect(0,0,W,H); renderPair(); };
+$('brush').oninput=()=>$('brushValue').textContent=$('brush').value;
+
+document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>setTab(b.dataset.tab));
+$('parallel').onclick=()=>chooseMode('parallel'); $('cross').onclick=()=>chooseMode('cross');
+$('generate').onclick=()=>{ seed=(Math.random()*0xffffffff)>>>0; renderPair(); };
+$('saveLeft').onclick=()=>saveCanvas('L'); $('saveRight').onclick=()=>saveCanvas('R');
+$('save').onclick=()=>saveCanvas('stereo'); $('saveDepth').onclick=()=>saveCanvas('depth');
+$('words').addEventListener('input',scheduleGenerate); $('shape').addEventListener('change',scheduleGenerate);
+['strength','grain','palette'].forEach(id=>$(id).addEventListener('input',()=>{ if(id==='strength') $('strengthValue').textContent=$(id).value; scheduleGenerate(); }));
+$('upload').addEventListener('change',async e=>{
+ const file=e.target.files?.[0]; if(!file) return;
+ if(!file.type.startsWith('image/')){ $('status').textContent='画像ファイルを選んでください'; return; }
+ const url=URL.createObjectURL(file);
+ try{
+   const img=new Image(); await new Promise((res,rej)=>{img.onload=res; img.onerror=rej; img.src=url}); imageBitmap=img; $('uploadName').textContent=file.name; renderPair();
+ }catch{ $('status').textContent='画像を読み込めませんでした'; }
+ finally{ URL.revokeObjectURL(url); }
+});
+$('strengthValue').textContent=$('strength').value;
+renderPair();
+// Installation UI is optional: generation, drawing, and saving work without it.
+let deferredInstall = null;
+const installButton = $('installButton');
+const installDialog = $('installDialog');
+const instructions = $('installInstructions');
+function inStandaloneMode(){return window.matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;}
+function setInstalledUI(){if(inStandaloneMode()) installButton.hidden = true;}
+window.addEventListener('beforeinstallprompt', event => {
+ event.preventDefault(); deferredInstall = event;
+});
+window.addEventListener('appinstalled', () => { deferredInstall = null; installButton.hidden = true; });
+function showInstallInstructions(){
+ const ios = /iPad|iPhone|iPod/.test(navigator.userAgent);
+ const localFile = location.protocol === 'file:';
+ let message;
+ if(localFile){
+   message = 'このファイルはローカルで開いています。PWAとしてインストールするには、HTTPSで公開するか、PCで localhost から開いてください。';
+ } else if(ios){
+   message = 'Safariの共有ボタンから「ホーム画面に追加」を選択してください。';
+ } else {
+   message = 'ブラウザのメニューにある「アプリをインストール」または「ホーム画面に追加」を選択してください。表示されない場合はHTTPS上で開いているか確認してください。';
+ }
+ instructions.textContent = message;
+ installDialog.showModal();
+}
+installButton.addEventListener('click', async () => {
+ if(deferredInstall){
+   const promptEvent = deferredInstall;
+   deferredInstall = null;
+   try{ await promptEvent.prompt(); await promptEvent.userChoice; }catch(_){ showInstallInstructions(); }
+ } else showInstallInstructions();
+});
+$('closeInstall').addEventListener('click',()=>installDialog.close());
+installDialog.addEventListener('click',event=>{if(event.target===installDialog)installDialog.close();});
+setInstalledUI();
+if('serviceWorker' in navigator && (location.protocol==='https:'||location.hostname==='localhost'||location.hostname==='127.0.0.1')) {
+ window.addEventListener('load', () => {
+   navigator.serviceWorker.register('./sw.js', {scope:'./'}).catch(() => {});
+ });
+}
+</script>
+</body>
+</html>
