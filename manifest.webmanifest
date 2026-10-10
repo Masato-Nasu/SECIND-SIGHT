@@ -1,0 +1,26 @@
+{
+  "id": "./",
+  "name": "SECOND SIGHT — モザイク立体視",
+  "short_name": "SECOND SIGHT",
+  "description": "左右2枚のモザイクで、隠された文字や図形を立体視するアプリ",
+  "lang": "ja",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f4f3ef",
+  "theme_color": "#f4f3ef",
+  "icons": [
+    {
+      "src": "./icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
