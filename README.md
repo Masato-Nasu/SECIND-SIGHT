@@ -4,6 +4,12 @@
 
 [アプリを開く（GitHub Pages）](https://masato-nasu.github.io/SECIND-SIGHT/)
 
+## スクリーンショット
+
+![SECOND SIGHT — 左右2枚のランダムドット立体視](screenshot.png)
+
+右眼用・左眼用のモザイクを並べた画面。左右の像を重ねて立体視します。
+
 ## 機能
 
 - 文字、図形（ハート・星・円・同心円・ひし形）、手描き、画像から立体視モザイクを生成
